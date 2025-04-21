@@ -1,0 +1,55 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Code Review Form - Software Technology - Summer Term 2025}
+\author{Author: Hugo Zabiego}
+\date{Source code: \texttt{FunctionUtils.java} - from line 1 to line 351}
+
+\begin{document}
+
+\maketitle
+
+\section*{1.) General}
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Does the code work?} \\ Yes, all the methods correctly implement the operations of composition, addition, multiplication, and function transformation — that is, creating a collector, converting a two-argument function into a single-argument function, and turning a regular function into a differentiable function.
+    It can also be seen that several cases are implemented by distinguishing between single-variable functions and multi-variable functions.
+    \item \textbf{Is all the code easily understood?} \\ For most of the functions, yes — their behavior is quickly understandable. However, the description of the collector function is not very clear; I find the code itself to be more readable than its documentation. Additionally, the implementation of the toDifferentiable function would benefit from a few comments explaining how it works and how the transformation is performed.
+    \item \textbf{Does it conform to your agreed coding conventions?} \\ The functions and variables follow CamelCase naming conventions, variable names are consistent, and the classes are understandable at first glance. Visibility (public, private, protected) is properly specified, and a few exceptions are thrown where there is a potential compilation error. I would therefore say that this principle is respected.
+    \item \textbf{Is the code as modular as possible?} \\ Each method is static and self-contained, the classes are well structured, and there is no overwriting of values or unnecessary functions.
+    \item \textbf{Is there any redundant or duplicate code?} \\ There are several repetitions between UnivariateFunction and UnivariateDifferentiableFunction in this code. It would have been simpler to merge them. Moreover, the code for multiplication and addition is essentially the same — creating a method that takes the operation to apply as a parameter could have allowed for better code merging.
+    \item \textbf{Can any global variables be replaced?} \\ There is any global variables in this code.
+    \item \textbf{Is there any commented-out code?} \\No, the code is clean and does not contain any such commented-out code (I did not considered the commented-out code from the data structures which are directly linked to the code, UnivariateFunction for example).
+    \item \textbf{Do loops have a set length and correct termination conditions?} \\The function array f in the parameters has a finite size, and most of the loops use this value as their termination condition, so there is no issue with loop termination. Moreover, the initial conditions are correct and the indices decrease when necessary
+    \item \textbf{Can any of the code be replaced with library functions?} \\ Some iterations could be modernized using streams or lambdas.
+\end{itemize}
+
+\section*{2.) Security}
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Are all data inputs checked (for type, length, format, range) and encoded?} \\ Not all elements are checked, especially for null values in arrays or functions. As a result, several parts of the code are missing exceptions for missing or empty values.
+    For example, the overrided function value should check if f.length is not null.
+    \item \textbf{Where third-party utilities are used, are returning errors being caught?} \\ Yes, specific exceptions are properly used (NumberIsTooLargeException,DimensionMismatchException) : they are thrown in case of problem.
+
+\end{itemize}
+
+\section*{3.) Documentation}
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Do comments exist and describe the intent of the code?} \\Yes, the comments clearly explain the purpose and behavior of most of the functions, following the Javadoc standard. However, in my opinion, a few comments are missing within the functions to explain some key steps.
+    \item \textbf{Are all functions commented?} \\ Yes, the parameters, the purpose, and the return value are clearly described for each function.
+    \item \textbf{Is any unusual behavior or edge-case handling described?} \\ Yes, for toDifferentiable, there is an explanation of the behavior in certain cases. I find that the rest of the code does not exhibit any unusual behavior.
+    \item \textbf{Are data structures and units of measurement explained?} \\ Yes, when looking at the structure declarations, everything is described and the parameters are well detailed — for example, in the UnivariateFunction data structure. However, I did not see any explanation about units of measurement in the code..
+    \item \textbf{Is there any incomplete code?} \\ Not at all.
+\end{itemize}
+
+\section*{4.) Testing}
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Is the code testable?} \\ Yes, each method returns a function that is easily testable. It is indeed simple to test multiplication or addition by applying the operations to simple functions. Function transformations are also straightforward to test; the only slightly more complex function to test would be toDifferentiable, since it involves testing not just values but a functional property.
+    \item \textbf{Do tests exist, and are they comprehensive?} \\ I did not see any functions tested in the test/stat folder, or at least they are not exactly the same functions, but rather rewritten versions. The function compositions are not included in the tests, and the operations are not exactly the same as in the file I’m reviewing — they are operations on classes other than functions.
+    \item \textbf{Could any test code be replaced with an existing API?} \\ The test code is already very optimized, I don't think it can be made more efficient.
+\end{itemize}
+
+\section*{Résumé}
+The code works correctly, implementing operations like composition, addition, multiplication, and function transformation (creating collectors, converting functions to single-argument ones, and making them differentiable). While most of the code is easy to understand, some parts like the collector function and toDifferentiable need better documentation. The coding conventions (CamelCase, visibility, and exception handling) are followed, and the code is modular with no global variables. However, there is some redundancy in the UnivariateFunction and UnivariateDifferentiableFunction classes, and the addition and multiplication operations could be merged for efficiency. Input validation is lacking, especially for null values in arrays or functions, although exceptions are correctly used for third-party utility errors. The code is generally well-documented, with comments on most functions, but some key steps could use further explanation. Testing is possible but incomplete, as the functions in the tests don't match exactly with those in the reviewed code, and there is insufficient coverage for function compositions. Overall, the code is clean, testable, and optimized, though some improvements in documentation and testing are needed.
+\end{document}
